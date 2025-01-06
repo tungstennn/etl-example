@@ -64,7 +64,7 @@ So that I can gather insights smoothly, without dealing with errors due to datab
 
 As a Data Scientist,
 I want to reset and update the data for repeat or future analysis,
-So that can further my analysis.
+So that can keep my analysis up to date.
 ```
 
 ---
