@@ -231,9 +231,65 @@ The user stories we have are definitely more ***EPIC*** like.  They are also int
 
 It seems reasonable to break the user stories down into each of the Acceptance Criteria (or grouped Acceptance Criteria).  Each of the test criteria for the acceptance criteria then becomes a task. These will be recorded on their own card.
 
----
+Commerical software is usually used to manage the backlog - the most common of these being Atlassian's Jira.  It has many tools that allow for the management of the backlog, sprint planning, sprint management and reporting.  It integrates with many other tools, such as GitHub, Slack and Confluence, allowing teams to work in a collaborative way.
+
+For this project, we have a GitHub repository and we can use GitHub Projects, Issues and Milestones to see how these can be used to simulate the more commonly used features of Jira.
+
+[Example Project](https://github.com/orgs/Digital-Futures-Academy-DE-Curriculum/projects/3/views/1)
+
+> NB: This link may not work if you are not a member of the **Digital-Futures-Academy-DE-Curriculum** organisation
+>
+> Below is an example of how the project is set up in GitHub Projects:
+
+![Example Project Board](./docs/images/github-project-backlog.png)
 
 ---
+
+## Project Set Up
+
+Now that we have a plan, we can start to set up the project.  This will include:
+
+1. Setting up the project structure.
+2. Setting up production, test and development environments.
+3. Installing the required dependencies.
+4. Creating the necessary files and folders.
+
+For the purposes of this walkthrough, we will also need to have access to the data sources.  These are provided in the `data-for-demo` folder.  The data sources are:
+
+- `unclean_customers.csv`
+- `unclean_transactions.db` (here as reference from an SQLite version of the database)
+- `unclean_transactions.sql`
+
+To make sure that the project will work on the architecture available, we need to use the same flavour of database as the actual data source.  In this case, the customer's systems use PostgreSQL.  
+
+For development and initial testing purposes, we will install a local version of the databases.
+
+> ***You will need to download and install PostgreSQL:***
+>
+> For Mac, you can install using ***Homebrew*** using the command:
+>
+
+```bash
+brew install postgresql
+```
+
+> For Windows, you can download the installer from the [PostgreSQL website](https://www.postgresql.org/download/).
+>
+> Make sure that you follow the instructions to set up the database and create a user - these should include:
+>
+> - Setting up a user with a password - use `postgres` as the user and `password` as the password.
+> - Add PostgreSQL to the system path - (e.g., `C:\Program Files\PostgreSQL\13\bin` is added to your system's `PATH` environment variable)
+>
+> On both system types:
+>
+> - Verify the installation with the command `psql --version`
+> -
+
+---
+
+### Activity 5: Set Up the Project
+
+In [Activity 5](./walkthough-activities/activity-5.md) as outlined in the document, you will set up the project structure.
 
 <!--
 
@@ -262,91 +318,5 @@ set ENV=test && python scripts/run_etl.py
 ---
 
 ## Folder Structure
-
-```plaintext
-etl-project/
-├── .venv/
-├── config/
-│   └── db_config.py
-├── data/
-│   ├── raw/
-│   ├── processed/
-│   └── output/
-├── data-for-demo/
-│   ├── unclean_customers.csv
-│   ├── unclean_transactions.db
-│   ├── unclean_transactions.sql
-├── docs/
-│   └── flowcharts/
-│       └── etl_flowchart.md
-├── etl/
-│   ├── extract/
-│   │   ├── __init__.py
-│   │   ├── extract.py
-│   ├── load/
-│   │   ├── __init__.py
-│   │   ├── load.py
-│   ├── sql/
-│   │   ├── extract_database.sql
-│   ├── transform/
-│   │   ├── __init__.py
-│   │   ├── transform.py
-│   └── __init__.py
-├── notebooks/
-│   └── exploratory_analysis.ipynb
-├── scripts/
-│   ├── __init__.py
-│   └── run_etl.py
-├── tests/
-│   ├── __init__.py
-├── .env
-├── .env.dev
-├── .env.test
-├── .gitignore
-├── README.md
-├── requirements.txt
-└── setup.py
-```
-
-Explanation of Folders and Files
-
-config/: Contains configuration files and scripts.
-
-db_config.py: A Python script for database configuration and connection setup.
-data/: Contains data files.
-
-raw/: Stores raw data files (e.g., CSV files) that are extracted from the source.
-processed/: Stores intermediate data files that have been processed.
-output/: Stores final output data files that are ready for analysis.
-docs/: Contains documentation files.
-
-flowcharts/: Stores flowcharts and diagrams related to the ETL process.
-etl_flowchart.md: A markdown file containing the ETL flowchart created using Mermaid.
-etl/: Contains the main ETL scripts.
-
-**init**.py: An empty file to make this directory a Python package.
-extract.py: Contains functions for data extraction from various sources.
-transform.py: Contains functions for data transformation and cleaning.
-load.py: Contains functions for loading data into the target database.
-utils.py: Contains utility functions used across the ETL process.
-notebooks/: Contains Jupyter notebooks for exploratory data analysis and prototyping.
-
-exploratory_analysis.ipynb: A notebook for exploring and analyzing the data.
-scripts/: Contains scripts for running the ETL pipeline.
-
-run_etl.py: A script to run the entire ETL pipeline.
-tests/: Contains test scripts for unit testing and performance testing.
-
-**init**.py: An empty file to make this directory a Python package.
-test_extract.py: Contains unit tests for the extraction functions.
-test_transform.py: Contains unit tests for the transformation functions.
-test_load.py: Contains unit tests for the loading functions.
-test_performance.py: Contains performance tests using pytest-benchmark.
-
-README.md: A markdown file that provides an overview of the project, setup instructions, and usage guidelines.
-requirements.txt: A file listing the Python dependencies required for the project.
-setup.py: A setup script for installing the project as a package.
-
----
 
 -->

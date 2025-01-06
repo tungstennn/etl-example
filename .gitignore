@@ -1,14 +1,9 @@
-# TEMP
-config/
-data/
-etl/
-scripts/
-tests/
-.env.*
-requirements.txt
-setup.py
-notebooks/
-.env
+# Temporarily Hidden
+.flake8
+pytest.ini
+tests/unit_tests
+tests/run_tests.py
+requirements.txt.bak
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

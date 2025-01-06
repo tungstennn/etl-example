@@ -6,20 +6,6 @@
 
 ---
 
-## Activity 4: Create a task list for each user story
+## Activity 4: No documented activity
 
-### Task List for User Story 1
-
-```txt
-USER STORY 1
-
-As a Data Analyst,  
-I want access to a single, clean, and accurate dataset combining customer demographics and transaction data,  
-So that I can analyze customer behaviour without worrying about data inconsistencies and can rely on it for analysis without manual checks.
-```
-
-```markdown
-
-### Definition of Done
-
-
+Using [Planning Poker](https://planningpokeronline.com/new-game/) and the file `../walkthrough-docs/misc/family_picnic_backlog.csv` to estimate the effort required to complete the tasks in the backlog.
