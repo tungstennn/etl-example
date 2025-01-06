@@ -28,7 +28,7 @@ Given these epics and their requirements, create user stories for each epic.  Th
 ```txt
 As a Data Analyst,  
 I want to obtain a single, clean dataset combining transantion and demogragraphic data,  
-So that I can do further analytics and gather insights
+So that I can analyze customer behaviour without worrying about data inconsistencies
 
 As a Data Scientist,
 I want to acquire a cleaned dataset stored in a SQL table,
