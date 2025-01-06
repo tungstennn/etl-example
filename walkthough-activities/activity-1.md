@@ -197,8 +197,8 @@ So that I can analyse customer behaviour without worrying about data inconsisten
 ***Acceptance Criteria***
 
 - **Data Extraction**
-  - [ ] Given the database contains  ***...*** rows with  ***...*** fields, when the data is extracted, then it should complete in less than  ***...*** minute.
-  - [ ] Given the CSV file contains  ***...*** rows with  ***...*** columns, when the data is extracted, then it should complete in less than  ***...*** seconds.
+  - [ ] Given the database contains  ***10500*** rows with  ***4*** fields, when the data is extracted, then it should complete in less than  ***1*** minute.
+  - [ ] Given the CSV file contains  ***5200*** rows with  ***5*** columns, when the data is extracted, then it should complete in less than  ***30*** seconds.
 - **Data Cleaning**
   - [ ] Given the extracted data, when duplicates are removed, ***...***
   - [ ] Given the extracted data, when missing values are handled, then ***...*** of missing should be resolved.
