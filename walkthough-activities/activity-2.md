@@ -61,7 +61,7 @@ Identify the missing subprocesses in the loading flowchart.  Preview the documen
 
 ```mermaid
 flowchart LR
-    A[???***] --> B1@{shape: subproc, label: "???"}
+    A[Data Quality Checks] --> B1@{shape: subproc, label: "99% of records should be accurate"}
     B1 --> B2@{shape: subproc, label: "???"}
     B2 --> B3@{shape: subproc, label: "???"}
     B3 --> B4@{shape: subproc, label: "???"}
