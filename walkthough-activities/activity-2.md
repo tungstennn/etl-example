@@ -17,7 +17,7 @@ flowchart TD
     C2 --> D[Data Cleaning]
     D --> E[Data transformation]
     E --> F[Data Quality/Validation]
-    F --> G([Testing])
+    F --> G[Testing]
     G --> H([Deploy Pipeline])
     
 
