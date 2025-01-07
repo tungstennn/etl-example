@@ -32,7 +32,7 @@ Identify the missing subprocesses in the data cleaning flowchart.  Preview the d
 ```mermaid
 
 flowchart LR
-    A[???*] --> B1@{shape: subproc, label: "Remove duplicates"}
+    A[Data Cleaning] --> B1@{shape: subproc, label: "Remove duplicates"}
     B1 --> B2@{shape: subproc, label: "Missing values are handled"}
     B2 --> B3@{shape: subproc, label: "invalid values are handled"}
     B3 --> B4@{shape: subproc, label: "Performance Optimisation"}
@@ -47,11 +47,10 @@ Identify the missing subprocesses in the data transformation flowchart.  Preview
 
 ```mermaid
 flowchart LR
-    A[???**] --> B1@{shape: subproc, label: "???"}
-    B1 --> B2@{shape: subproc, label: "???"}
-    B2 --> B3@{shape: subproc, label: "???"}
-    B3 --> B4@{shape: subproc, label: "???"}
-    B4 --> B5@{ shape: lean-r, label: "Transformed Data" }
+    A[Data Transformating] --> B1@{shape: subproc, label: "customer demographics dataset (CSV) and transaction dataset (database) are merged"}
+    B1 --> B2@{shape: subproc, label: "total_spent field should be accurate and reflect the sum of all amount values for each customer_id"}
+    B2 --> B3@{shape: subproc, label: "`is_active` set to true should signal if a customer is active"}
+    B3 --> B4@{ shape: lean-r, label: "Transformed Data" }
 ```
 
 ---
