@@ -14,10 +14,11 @@ flowchart TD
     B --> C1@{ shape: cyl, label: "Source 1: Database"}
     B --> C2@{shape: doc, label: "Source 2: CSV file"}
     C1 --> D[Data Cleaning]
-    C2 --> D[Data Transformation]
-    D --> E[Data Quality/Validation]
-    E --> F[Testing]
-    F --> G([Deploy Pipeline])
+    C2 --> D[Data Cleaning]
+    D --> E[Data transformation]
+    E --> F[Data Quality/Validation]
+    F --> G([Testing])
+    G --> H([Deploy Pipeline])
     
 
 ```
