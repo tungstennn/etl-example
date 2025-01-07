@@ -11,12 +11,12 @@ Identify the missing steps in the high-level flowchart.  Preview the document to
 ```mermaid
 flowchart TD
     A@{ shape: stadium, label: "Start: Data Sources"} --> B@{ shape: tri, label: "Extract Data"}
-    B --> C1@{ shape: cyl, label: "Source 1: CSV file"}
-    B --> C2@{shape: doc, label: "Source 2: Database"}
-    C1 --> D[???*]
-    C2 --> D[???*]
-    D --> E[???**]
-    E --> F[???***]
+    B --> C1@{ shape: cyl, label: "Source 1: Database"}
+    B --> C2@{shape: doc, label: "Source 2: CSV file"}
+    C1 --> D[Data Cleaning*]
+    C2 --> D[Data Transformation*]
+    D --> E[Data Quality**]
+    E --> F[Testing***]
     F --> G([Deploy Pipeline****])
     
 
