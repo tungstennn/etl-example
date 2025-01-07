@@ -109,8 +109,21 @@ then it should complete in less than 30 seconds.
 
 Here we need to test that the following things happen:
 
-- ***Test Type 1***:
-  - Test Case 1
+- ***Performance Test***:
+  - [ ] - Verify that the data extraction completes in less than 30 seconds (regardless of the number of rows).
+- ***Functional Tests***:
+  - [ ] - Verify that the data extraction retrieves exactly 5 fields per row.
+- ***Data Integrity Tests***:
+  - [ ] - Verify data consistency between the extracted data and the source database.
+  - [ ] - Verify data accuracy for a sample of rows.
+- ***Reliability Tests***:
+  - [ ] - Verify that the code handles a database connection error gracefully
+  - [ ] - Verify that the code handles a database query error gracefully
+  - [ ] - Verify that the code handles a database timeout error gracefully
+- ***Code Quality Tests***:
+  - [ ] - SQL queries pass linting and formatting checks.
+  - [ ] - Python scripts pass linting and formatting checks.
+  - [ ] - Test coverage on the database extraction script is at least 90%.
 ...
 
 Add as needed!
