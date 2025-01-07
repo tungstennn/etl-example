@@ -13,11 +13,11 @@ flowchart TD
     A@{ shape: stadium, label: "Start: Data Sources"} --> B@{ shape: tri, label: "Extract Data"}
     B --> C1@{ shape: cyl, label: "Source 1: Database"}
     B --> C2@{shape: doc, label: "Source 2: CSV file"}
-    C1 --> D[Data Cleaning*]
-    C2 --> D[Data Transformation*]
-    D --> E[Data Quality**]
-    E --> F[Testing***]
-    F --> G([Deploy Pipeline****])
+    C1 --> D[Data Cleaning]
+    C2 --> D[Data Transformation]
+    D --> E[Data Quality]
+    E --> F[Testing]
+    F --> G([Deploy Pipeline])
     
 
 ```
