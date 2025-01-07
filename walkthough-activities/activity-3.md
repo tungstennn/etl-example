@@ -114,16 +114,15 @@ Here we need to test that the following things happen:
 - ***Functional Tests***:
   - [ ] - Verify that the data extraction retrieves exactly 5 fields per row.
 - ***Data Integrity Tests***:
-  - [ ] - Verify data consistency between the extracted data and the source database.
+  - [ ] - Verify data consistency between the extracted data and the source CSV file.
   - [ ] - Verify data accuracy for a sample of rows.
 - ***Reliability Tests***:
-  - [ ] - Verify that the code handles a database connection error gracefully
-  - [ ] - Verify that the code handles a database query error gracefully
-  - [ ] - Verify that the code handles a database timeout error gracefully
+  - [ ] - Verify that the code handles a file read error gracefully
+  - [ ] - Verify that the code handles a file format error gracefully
+  - [ ] - Verify that the code handles a file read timeout error gracefully
 - ***Code Quality Tests***:
-  - [ ] - SQL queries pass linting and formatting checks.
   - [ ] - Python scripts pass linting and formatting checks.
-  - [ ] - Test coverage on the database extraction script is at least 90%.
+  - [ ] - Test coverage on the CSV extraction script is at least 90%.
 ...
 
 Add as needed!
