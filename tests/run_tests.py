@@ -88,6 +88,7 @@ def create_cov_command_str(test_dir, cov_sources):
 
 
 def main():
+    # Get the argument passed to run_tests 
     command = sys.argv[1]
 
     # Lint then stop executing test run if command is 'lint'
