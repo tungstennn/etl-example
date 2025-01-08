@@ -4,6 +4,34 @@
 
 ---
 
+<!-- TOC -->
+
+- [](#)
+  - [ETL Pipeline Project Walkthrough](#etl-pipeline-project-walkthrough)
+  - [Project Requirements](#project-requirements)
+  - [Goals](#goals)
+  - [Requirements Summary](#requirements-summary)
+  - [Fail to Plan...Plan to Fail](#fail-to-planplan-to-fail)
+  - [Agile Methodology](#agile-methodology)
+    - [Activity 1: Identify the User Stories, Acceptance Criteria and Definition of Done](#activity-1-identify-the-user-stories-acceptance-criteria-and-definition-of-done)
+    - [Activity 1 Solution](#activity-1-solution)
+  - [Planning the ETL Pipeline](#planning-the-etl-pipeline)
+    - [Activity 2: Design the ETL Pipeline and Subprocesses](#activity-2-design-the-etl-pipeline-and-subprocesses)
+    - [Activity 2 Solution](#activity-2-solution)
+  - [Test Planning](#test-planning)
+    - [Activity 3: Plan the Testing Strategy](#activity-3-plan-the-testing-strategy)
+    - [Activity 3 Solution](#activity-3-solution)
+  - [Breaking the Tasks Down](#breaking-the-tasks-down)
+    - [Activity 4: Play a Planning Poker Session](#activity-4-play-a-planning-poker-session)
+    - [Activity 4 Solution](#activity-4-solution)
+    - [But...What about breaking the user stories down for this project?](#butwhat-about-breaking-the-user-stories-down-for-this-project)
+  - [Project Set Up](#project-set-up)
+    - [Activity 5: Set Up the Project](#activity-5-set-up-the-project)
+  - [Extract Data](#extract-data)
+    - [Activity 6: Extract Data](#activity-6-extract-data)
+
+<!-- /TOC -->
+
 ---
 
 ## Project Requirements
@@ -167,7 +195,7 @@ As part of an Agile process and any sound project planning and strategy developm
 
 > Here is an example of a Definition of Done for a user story, recorded on a GitHub issue card (which are often used as user story cards in Agile projects):
 
-![Definition of Done Example](./docs/images/github-issue-dod.png)
+![Definition of Done Example](./walkthrough-docs/images/github-issue-dod.png)
 
 It is usual to define a list of test cases and include them in the description of the user story on the card on the Agile board.  This helps to ensure that the team is clear on what is expected and what is required to be successful.
 
@@ -197,7 +225,7 @@ Now that we have some user stories, a high-level plan and a testing strategy, we
 >
 > These are done by creating a markdown checklist in the description of the user story card on the Agile board.
 
-![User Story Checklist](./docs/images/github-issue-tasks.png)
+![User Story Checklist](./walkthrough-docs/images/github-issue-tasks.png)
 
 As we have done a lot of work on identifying the Acceptance Criteria, it seems for this project that we already have our task list for each user story.  This is a good example of how the Acceptance Criteria can be used to define the tasks for the user story.
 
@@ -231,122 +259,84 @@ The user stories we have are definitely more ***EPIC*** like.  They are also int
 
 It seems reasonable to break the user stories down into each of the Acceptance Criteria (or grouped Acceptance Criteria).  Each of the test criteria for the acceptance criteria then becomes a task. These will be recorded on their own card.
 
----
+Commerical software is usually used to manage the backlog - the most common of these being Atlassian's Jira.  It has many tools that allow for the management of the backlog, sprint planning, sprint management and reporting.  It integrates with many other tools, such as GitHub, Slack and Confluence, allowing teams to work in a collaborative way.
+
+For this project, we have a GitHub repository and we can use GitHub Projects, Issues and Milestones to see how these can be used to simulate the more commonly used features of Jira.
+
+[Example Project](https://github.com/orgs/Digital-Futures-Academy-DE-Curriculum/projects/3/views/1)
+
+> NB: This link may not work if you are not a member of the **Digital-Futures-Academy-DE-Curriculum** organisation
+>
+> Below is an example of how the project is set up in GitHub Projects:
+
+![Example Project Board](./walkthrough-docs/images/github-project-backlog.png)
 
 ---
 
-<!--
+## Project Set Up
 
-## Passing the Environment Variable in the Command Line
+Now that we have a plan, we can start to set up the project.  This will include:
 
-You can set the environment variable inline before running the script. This method works in most Unix-like operating systems (Linux, macOS) and in Windows PowerShell.
+1. Setting up the project structure.
+2. Setting up production, test and development environments.
+3. Installing the required dependencies.
+4. Creating the necessary files and folders to allow testing, linting and running the project.
 
-### Unix-like Operating Systems (Linux, macOS)
+For the purposes of this walkthrough, we will also need to have access to the data sources.  These are provided in the `data-for-demo` folder.  The data sources are:
+
+- `unclean_customers.csv`
+- `unclean_transactions.db` (here as reference from an SQLite version of the database)
+- `unclean_transactions.sql`
+
+To make sure that the project will work on the architecture available, we need to use the same flavour of database as the actual data source.  In this case, the customer's systems use PostgreSQL.  
+
+For development and initial testing purposes, we will install a local version of the databases.
+
+> ***You will need to download and install PostgreSQL:***
+>
+> For Mac, you can install using ***Homebrew*** using the command:
+>
 
 ```bash
-ENV=test python scripts/run_etl.py
+brew install postgresql
 ```
 
-### Windows PowerShell
-
-```powershell
-$env:ENV="test"; python scripts/run_etl.py
-```
-
-### Windows Command Prompt
-
-```cmd
-set ENV=test && python scripts/run_etl.py
-```
+> For Windows, you can download the installer from the [PostgreSQL website](https://www.postgresql.org/download/).
+>
+> Make sure that you follow the instructions to set up the database and create a user - these should include:
+>
+> - Setting up a user with a password - use `postgres` as the user and `password` as the password.
+> - Add PostgreSQL to the system path - (e.g., `C:\Program Files\PostgreSQL\13\bin` is added to your system's `PATH` environment variable)
+>
+> On both system types:
+>
+> - Verify the installation with the command `psql --version`
+>
 
 ---
 
-## Folder Structure
+### Activity 5: Set Up the Project
 
-```plaintext
-etl-project/
-├── .venv/
-├── config/
-│   └── db_config.py
-├── data/
-│   ├── raw/
-│   ├── processed/
-│   └── output/
-├── data-for-demo/
-│   ├── unclean_customers.csv
-│   ├── unclean_transactions.db
-│   ├── unclean_transactions.sql
-├── docs/
-│   └── flowcharts/
-│       └── etl_flowchart.md
-├── etl/
-│   ├── extract/
-│   │   ├── __init__.py
-│   │   ├── extract.py
-│   ├── load/
-│   │   ├── __init__.py
-│   │   ├── load.py
-│   ├── sql/
-│   │   ├── extract_database.sql
-│   ├── transform/
-│   │   ├── __init__.py
-│   │   ├── transform.py
-│   └── __init__.py
-├── notebooks/
-│   └── exploratory_analysis.ipynb
-├── scripts/
-│   ├── __init__.py
-│   └── run_etl.py
-├── tests/
-│   ├── __init__.py
-├── .env
-├── .env.dev
-├── .env.test
-├── .gitignore
-├── README.md
-├── requirements.txt
-└── setup.py
-```
+In [Activity 5 (Solution)](./walkthough-activities/activity-5-solution.md) as outlined in the document, you will be walked through the process of setting up the project, including creating the folder structure, installing the initial dependencies and setting up the testing environment.
 
-Explanation of Folders and Files
+This process is labour intensive and can take some time to complete.  Generally, you may not be involved in this part of the process but it is important to understand how it is done.  This walkthrough uses general best practices but each organisation will have its own standards, practices and preferred dependencies, tools and environments.  Ultimately, the project will meet the requirements whichever way it is set up!
 
-config/: Contains configuration files and scripts.
+After the walkthrough, you should be able to run the project and see an initial output along with the tests that have been set up.  You will also be able to see the linting that has been set up.
 
-db_config.py: A Python script for database configuration and connection setup.
-data/: Contains data files.
-
-raw/: Stores raw data files (e.g., CSV files) that are extracted from the source.
-processed/: Stores intermediate data files that have been processed.
-output/: Stores final output data files that are ready for analysis.
-docs/: Contains documentation files.
-
-flowcharts/: Stores flowcharts and diagrams related to the ETL process.
-etl_flowchart.md: A markdown file containing the ETL flowchart created using Mermaid.
-etl/: Contains the main ETL scripts.
-
-**init**.py: An empty file to make this directory a Python package.
-extract.py: Contains functions for data extraction from various sources.
-transform.py: Contains functions for data transformation and cleaning.
-load.py: Contains functions for loading data into the target database.
-utils.py: Contains utility functions used across the ETL process.
-notebooks/: Contains Jupyter notebooks for exploratory data analysis and prototyping.
-
-exploratory_analysis.ipynb: A notebook for exploring and analyzing the data.
-scripts/: Contains scripts for running the ETL pipeline.
-
-run_etl.py: A script to run the entire ETL pipeline.
-tests/: Contains test scripts for unit testing and performance testing.
-
-**init**.py: An empty file to make this directory a Python package.
-test_extract.py: Contains unit tests for the extraction functions.
-test_transform.py: Contains unit tests for the transformation functions.
-test_load.py: Contains unit tests for the loading functions.
-test_performance.py: Contains performance tests using pytest-benchmark.
-
-README.md: A markdown file that provides an overview of the project, setup instructions, and usage guidelines.
-requirements.txt: A file listing the Python dependencies required for the project.
-setup.py: A setup script for installing the project as a package.
+Your team's task is to write a PROJECT_README.md file that can be used by other developers to set up the project on their local machines.  This will include the steps to set up the project, the dependencies required and how to run the project.
 
 ---
 
--->
+---
+
+## Extract Data
+
+We made it!  We're now ready to start coding the solution.  However, we should not forget all of the work we did in the planning phase.  We need to make sure that we go and review the highest priority user story and the sub-tasks we identified.  Remember that these sub-tasks were generated from the Acceptance Criteria and to help us meet the Definition of Done.  They also formed the basis of the test cases, so we can use TDD to help use code each part of the solution where the expected outcomes are known.
+
+---
+
+### Activity 6: Extract Data
+
+In [Activity 6](./wlakthrough-activities/activity-6.md), you will be walked through the first part of the process of extracting data from the datasources.  Your team will then take on the responsibility of completing the extraction processes.
+
+---

@@ -1,14 +1,5 @@
-# TEMP
-config/
-data/
-etl/
-scripts/
-tests/
-.env.*
-requirements.txt
-setup.py
-notebooks/
-.env
+# Temporarily Hidden
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
