@@ -1,0 +1,19 @@
+[flake8]
+# Specify the directories to include
+exclude = 
+    .pytest_cache,
+    .venv,
+    __pycache__,
+    build,
+    dist,
+    data,
+    docs,
+    etl_example.egg-info,
+    htmlcov,
+    notebooks,
+    tests,
+    walkthough-activites,
+    walkthough-docs,
+    walkthough-data,
+    setup.py
+

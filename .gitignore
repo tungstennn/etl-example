@@ -1,9 +1,10 @@
 # Temporarily Hidden
-.flake8
-pytest.ini
-tests/unit_tests
-tests/run_tests.py
 requirements.txt.bak
+tests/unit_tests
+tests/integration_tests
+tests/test_data
+etl/*
+utils/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

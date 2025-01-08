@@ -17,9 +17,13 @@ def load_db_config() -> Dict[str, Dict[str, str]]:
     :return: Dictionary containing source and target database
     connection parameters.
     """
-    env = os.getenv('ENV', 'dev')
+    # env = os.getenv('ENV', 'dev')
+    env = os.getenv('ENV')
 
-    # Load the appropriate .env file
+    # Throw an error or load the appropriate .env file
+    if env is None:
+        raise KeyError('ENV variable not set')
+
     env_file = '.env' if env == 'prod' else f'.env.{env}'
     load_dotenv(env_file)
 

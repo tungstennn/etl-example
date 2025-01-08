@@ -249,7 +249,7 @@ For Testing:
 
 For Linting and Code Formatting:
 
-- `flake8`: A tool for linting Python code.
+- `flake8`: A tool for linting Python code - ***Top Tip: Install the Flake8 VSCode extension to pre-empt most issues!***
 - `sqlfluff`: A SQL linter and formatter.
 
 We may well add more as we go but here is the complete install command for now:
@@ -340,14 +340,213 @@ There is a unit test that checks that the correct values are loaded from the `.e
 
 ---
 
-<!-- 
-#### 4.2: Set Up Pytest, Coverage, Unit, Component, Integration and Performance Testing
+#### 4.2: Set Up PyTest, Coverage, Lint, Unit, Component, and Integration Testing
+
+#### 4.2.1: Configure Test Runs
 
 Look in the `tests` folder and you should find a file called `run_tests.py`.  The purpose of this file to allow the running of different types of tests as well as a full test run.
 
-Each `pytest` run is prefixed with the environment variable `ENV` to ensure the correct environment variables are loaded and coverage is calculated for the files tested.
+The first line of the method is to access the argument that has been supplied to the script.  This file configures tests to be run using the command `run_tests` followed by the type of test to be run.  
 
--->
+```python
+def main():
+    command = sys.argv[1]
+    ...
+```
 
-<!-- TODO: Add config for performance testing -->
-<!-- TODO: Add linting config -->
+The options defined are:
+
+```bash
+run_tests unit # Run unit tests
+run_tests component # Run component tests
+run_tests integration # Run integration tests
+run_tests all # Run all tests
+```
+
+```python
+   ...
+   # Define test directories and corresponding coverage targets
+    test_config = {
+        'unit': {'dir': 'tests/unit_tests', 'cov': ['config']},
+        'integration': {'dir': 'tests/integration_tests', 'cov': []},
+        'component': {'dir': 'tests/component_tests', 'cov': []},
+        'all': {'dir': 'tests', 'cov': ['config', 'etl']},
+    }
+    ...
+```
+
+The `test_config` dictionary defines the directories to search for tests and the units under test for coverage reports to be generated.  If additional folders are added to say unit tests, then the path from the root of the project should be added to the `'cov'` list.
+
+> E.g. If we wanted to additionally unit test the `extract.py` file found on the path `etl/extract` then the `'unit'` key in the dictionary would be updated to include the path to the file.
+
+```python
+test_config = {
+    'unit': {'dir': 'tests/unit_tests', 'cov': ['config', 'etl/extract']},
+    ...
+}
+```
+
+Later we will add an additional key for `'performance'` tests to allow the `run_tests performance` to be run individually.
+
+We then check to see if a command was supplied for the test run and get the directories to test and the folders to run coverage on:
+
+```python
+   ...
+   if command in test_config:
+        # Access the test_config dictionary to get the test directory 
+        # and coverage targets
+        test_dir = test_config[command]['dir']
+        cov_sources = ','.join(test_config[command]['cov'])
+   ...
+```
+
+The next section builds the command to run the tests and coverage reports, based on the type of test and the coverage directories associated with it, defaulting to a standard pytest run if no coverage directories are defined.
+
+```python
+   ...
+   if cov_sources:
+            cov_command = (
+                f'ENV=test coverage run --source={cov_sources} '
+                f'--omit=*/__init__.py -m pytest --verbose {test_dir} '
+                '&& coverage report -m && coverage html '
+                '&& coverage report --fail-under=90'
+            )
+        else:
+            cov_command = f'ENV=test pytest --verbose {test_dir}'
+    ...
+```
+
+> NOTE: The command is configured to be run on UNIX-Like systems as most CI/CD pipelines will be running on Linux.  You will need to change the `ENV=test` to `set ENV=test` to set the environment variable to run from the Command Line on Windows and `$env:ENV="test";` to set the environment variable in PowerShell.  If you are running on Powershell in Windows, you will need to change the `&&` to `;` (removing the space before it) to run the commands sequentially.  
+>
+> ***BEST PRACTICE***: Assume Linux on projects but check! Set the default terminal on your Windows machine to ***GitBash*** as this allows you to run Linux commands in a Windows environment.
+
+Each command is prefixed with the environment variable `ENV` (set to `test`) to ensure the correct environment variables are loaded and coverage is calculated for the files tested.
+
+We run coverage on the source files defined, omitting any `__init__.py` files, and then run the tests in the directory defined.  The `verbose` flag is used to output the results of the tests to the console.  A coverage report is generated in html format and the script will fail if the total coverage of the tests is below 90%.  This will count as a failure in an automated process.
+
+The final line of this `if` section uses the `subprocess` module to run the command and output the results to the console.
+
+```python
+   ...
+   subprocess.run(cov_command, shell=True)
+   ...
+```
+
+The first `elif` will run if `lint` is supplied as the argument and this will run the `flake8` process over the folders defined in the `.flake8` file.  This can be found in the root of the project.
+
+```python
+   ...
+   elif command == 'lint':
+        subprocess.run('flake8', shell=True)
+   ...
+```
+
+The `else` statement will throw a `ValueError` which will stop the script running if an invalid command is supplied.  This will be extremely useful in an automated process to make sure that the job fails if the tests are not run correctly.
+
+```python
+   ...
+   else:
+        raise ValueError(f"Unknown command: {command}")
+   ...
+```
+
+The final lines of the script is to call the `main` method to run the script.
+
+```python
+if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        raise ValueError("Usage: run_tests.py <unit|integration|component|all|lint>")
+    else:
+        main()
+```
+
+This will also throw an error if the `run_tests` command is run without a valid argument.
+
+---
+
+#### 4.2.2 PyTest Configuration
+
+No additional configuration of PyTest is required.  If additional configuration is required, a `pytest.ini` file can be created in the root of the project.
+
+#### 4.2.3 Coverage Configuration
+
+No additional configuration of Coverage is required.  If additional configuration is required, a `.coveragerc` file can be created in the root of the project.  The options for coverage are defined in the command generated for the purposes of this walkthrough.  Information about configuring coverage can be found [here](https://coverage.readthedocs.io/en/coverage-5.5/config.html).
+
+#### 4.2.4 Flake8 Configuration
+
+A `.flake8` file has been created in the root of the project to define the rules for linting the code.  At the current time, the file has been set up to exclude a number of project folders (including the walkthrough folders) and also any folders that may contain external Python files (linting them is not OUR responsibility).  We also exclude test files from the linting process but you should endeavour to meet linting rules where possible!
+
+#### 4.2.5 Performance Testing
+
+Setting up performance testing will be covered later in the walkthrough.
+
+---
+
+---
+
+## Running the Tests
+
+A unit test has been created for the config.db_config module.  This test checks that the correct values are loaded from the `.env` files.
+
+To run the test, use the following command:
+
+```bash
+run_tests unit
+```
+
+This command will run the unit tests and output the results to the console.
+
+```terminal
+============================================================================================== test session starts ===============================================================================================
+platform darwin -- Python 3.13.1, pytest-8.3.4, pluggy-1.5.0 -- /Users/edwright/DFA-Repos/Digital-Futures-Academy-DE-Curriculum/etl_example/.venv/bin/python3.13
+cachedir: .pytest_cache
+rootdir: /Users/edwright/DFA-Repos/Digital-Futures-Academy-DE-Curriculum/etl_example
+plugins: cov-6.0.0, postgresql-6.1.1, mock-3.14.0
+collected 1 item                                                                                                                                                                                                 
+
+tests/unit_tests/test_db_config.py::test_load_db_config PASSED                                                                                                                                             [100%]
+
+=============================================================================================== 1 passed in 0.02s ================================================================================================
+Name                  Stmts   Miss  Cover   Missing
+---------------------------------------------------
+config/db_config.py       9      0   100%
+---------------------------------------------------
+TOTAL                     9      0   100%
+Wrote HTML report to htmlcov/index.html
+Name                  Stmts   Miss  Cover
+-----------------------------------------
+config/db_config.py       9      0   100%
+-----------------------------------------
+TOTAL                     9      0   100%
+```
+
+You will also find that a new folder, called `htmlcov` has been created in the root of the project.  This folder contains the coverage report in HTML format.  Open the `index.html` file in a browser to view the report - if you have the `live-server` extension installed in VSCode, you can right-click on the file and select `Open with Live Server` to view the report in your browser.
+
+You can also ensure that this test runs if the `run_tests all` command is run.
+
+---
+
+### Documenting the Environment Set Up
+
+It is good practice to have a README file that documents the environment set up.  This should include the following:
+
+- How to set up the project.
+- How to install the required dependencies.
+- How to set up the databases (locally for now but how to get access to the staging, testing and production databases should be included).
+- How to run the tests (including fail conditions for the pipeline - what will stop the tests completing successfully - apart from errors in the code!)
+- How to run the ETL pipeline (locally for now but ultimately, how a pipeline rebuild is triggered would be here too).
+- Any additional information that may be useful for someone new to the project.
+
+### Over to You
+
+Create a file called PROJECT_README.md in the root of your project and document the environment set up.  You should reference this document and the README.md file in the root of the project to help.
+
+---
+
+## Summary
+
+The project is now set up and we are ready to tackle some of the tasks in the first user story!
+
+---
+
+---

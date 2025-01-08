@@ -1,0 +1,13 @@
+[run]
+omit = 
+    */__init__.py
+    tests/*
+    walkthrough_activities/*
+    walkthrough_data/*
+    walkthrough_docs/*
+
+[report]
+fail_under = 90
+
+[html]
+directory = htmlcov

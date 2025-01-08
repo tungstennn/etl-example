@@ -4,6 +4,34 @@
 
 ---
 
+<!-- TOC -->
+
+- [](#)
+  - [ETL Pipeline Project Walkthrough](#etl-pipeline-project-walkthrough)
+  - [Project Requirements](#project-requirements)
+  - [Goals](#goals)
+  - [Requirements Summary](#requirements-summary)
+  - [Fail to Plan...Plan to Fail](#fail-to-planplan-to-fail)
+  - [Agile Methodology](#agile-methodology)
+    - [Activity 1: Identify the User Stories, Acceptance Criteria and Definition of Done](#activity-1-identify-the-user-stories-acceptance-criteria-and-definition-of-done)
+    - [Activity 1 Solution](#activity-1-solution)
+  - [Planning the ETL Pipeline](#planning-the-etl-pipeline)
+    - [Activity 2: Design the ETL Pipeline and Subprocesses](#activity-2-design-the-etl-pipeline-and-subprocesses)
+    - [Activity 2 Solution](#activity-2-solution)
+  - [Test Planning](#test-planning)
+    - [Activity 3: Plan the Testing Strategy](#activity-3-plan-the-testing-strategy)
+    - [Activity 3 Solution](#activity-3-solution)
+  - [Breaking the Tasks Down](#breaking-the-tasks-down)
+    - [Activity 4: Play a Planning Poker Session](#activity-4-play-a-planning-poker-session)
+    - [Activity 4 Solution](#activity-4-solution)
+    - [But...What about breaking the user stories down for this project?](#butwhat-about-breaking-the-user-stories-down-for-this-project)
+  - [Project Set Up](#project-set-up)
+    - [Activity 5: Set Up the Project](#activity-5-set-up-the-project)
+  - [Extract Data](#extract-data)
+    - [Activity 6: Extract Data](#activity-6-extract-data)
+
+<!-- /TOC -->
+
 ---
 
 ## Project Requirements
@@ -167,7 +195,7 @@ As part of an Agile process and any sound project planning and strategy developm
 
 > Here is an example of a Definition of Done for a user story, recorded on a GitHub issue card (which are often used as user story cards in Agile projects):
 
-![Definition of Done Example](./docs/images/github-issue-dod.png)
+![Definition of Done Example](./walkthrough-docs/images/github-issue-dod.png)
 
 It is usual to define a list of test cases and include them in the description of the user story on the card on the Agile board.  This helps to ensure that the team is clear on what is expected and what is required to be successful.
 
@@ -197,7 +225,7 @@ Now that we have some user stories, a high-level plan and a testing strategy, we
 >
 > These are done by creating a markdown checklist in the description of the user story card on the Agile board.
 
-![User Story Checklist](./docs/images/github-issue-tasks.png)
+![User Story Checklist](./walkthrough-docs/images/github-issue-tasks.png)
 
 As we have done a lot of work on identifying the Acceptance Criteria, it seems for this project that we already have our task list for each user story.  This is a good example of how the Acceptance Criteria can be used to define the tasks for the user story.
 
@@ -241,7 +269,7 @@ For this project, we have a GitHub repository and we can use GitHub Projects, Is
 >
 > Below is an example of how the project is set up in GitHub Projects:
 
-![Example Project Board](./docs/images/github-project-backlog.png)
+![Example Project Board](./walkthrough-docs/images/github-project-backlog.png)
 
 ---
 
@@ -252,7 +280,7 @@ Now that we have a plan, we can start to set up the project.  This will include:
 1. Setting up the project structure.
 2. Setting up production, test and development environments.
 3. Installing the required dependencies.
-4. Creating the necessary files and folders.
+4. Creating the necessary files and folders to allow testing, linting and running the project.
 
 For the purposes of this walkthrough, we will also need to have access to the data sources.  These are provided in the `data-for-demo` folder.  The data sources are:
 
@@ -283,40 +311,32 @@ brew install postgresql
 > On both system types:
 >
 > - Verify the installation with the command `psql --version`
-> -
+>
 
 ---
 
 ### Activity 5: Set Up the Project
 
-In [Activity 5](./walkthough-activities/activity-5.md) as outlined in the document, you will set up the project structure.
+In [Activity 5 (Solution)](./walkthough-activities/activity-5-solution.md) as outlined in the document, you will be walked through the process of setting up the project, including creating the folder structure, installing the initial dependencies and setting up the testing environment.
 
-<!--
+This process is labour intensive and can take some time to complete.  Generally, you may not be involved in this part of the process but it is important to understand how it is done.  This walkthrough uses general best practices but each organisation will have its own standards, practices and preferred dependencies, tools and environments.  Ultimately, the project will meet the requirements whichever way it is set up!
 
-## Passing the Environment Variable in the Command Line
+After the walkthrough, you should be able to run the project and see an initial output along with the tests that have been set up.  You will also be able to see the linting that has been set up.
 
-You can set the environment variable inline before running the script. This method works in most Unix-like operating systems (Linux, macOS) and in Windows PowerShell.
-
-### Unix-like Operating Systems (Linux, macOS)
-
-```bash
-ENV=test python scripts/run_etl.py
-```
-
-### Windows PowerShell
-
-```powershell
-$env:ENV="test"; python scripts/run_etl.py
-```
-
-### Windows Command Prompt
-
-```cmd
-set ENV=test && python scripts/run_etl.py
-```
+Your team's task is to write a PROJECT_README.md file that can be used by other developers to set up the project on their local machines.  This will include the steps to set up the project, the dependencies required and how to run the project.
 
 ---
 
-## Folder Structure
+---
 
--->
+## Extract Data
+
+We made it!  We're now ready to start coding the solution.  However, we should not forget all of the work we did in the planning phase.  We need to make sure that we go and review the highest priority user story and the sub-tasks we identified.  Remember that these sub-tasks were generated from the Acceptance Criteria and to help us meet the Definition of Done.  They also formed the basis of the test cases, so we can use TDD to help use code each part of the solution where the expected outcomes are known.
+
+---
+
+### Activity 6: Extract Data
+
+In [Activity 6](./wlakthrough-activities/activity-6.md), you will be walked through the first part of the process of extracting data from the datasources.  Your team will then take on the responsibility of completing the extraction processes.
+
+---
