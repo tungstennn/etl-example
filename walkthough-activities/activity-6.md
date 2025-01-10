@@ -65,7 +65,7 @@ So that I can analyze customer behaviour without worrying about data inconsisten
 ### Performance
 
 - Performance benchmarks are met (e.g., data extraction and cleaning times are within acceptable limits).
-  - **Database Extraction**: *Less than 1 minute* for *10,500 rows* with *4 fields*.
+  - **Database Extraction**: *Less than 1ms per row* for *10,500 rows* with *4 fields*.
   - **CSV Extraction**: *Less than 30 seconds* for *5,200 rows* with *5 columns*.
   - **Data Cleaning**: *Less than 1 second* per *1,000 rows*.
   - **Data Transformation**: *Joins* and *aggregations* take *less than 5 seconds* per *10,000 rows*.
@@ -129,7 +129,7 @@ So that I can analyze customer behaviour without worrying about data inconsisten
 
 ### Data Extraction
 
-- Given the database contains 10,500 rows with 4 fields, when the data is extracted, then it should complete in less than 1 minute. #16
+- Given the database contains 10,500 rows with 4 fields, when the data is extracted, then it should complete in less than 1ms per row. #16
 - Given the CSV file contains 5,200 rows with 5 columns, when the data is extracted, then it should complete in less than 30 seconds. #17
 
 ### Data Cleaning
@@ -195,7 +195,7 @@ then it should complete in less than 1 minute.
 ```
 
 - ***Performance Test***:
-  - [ ] - Verify that the data extraction completes in less than 1 minute (regardless of the number of rows).
+  - [ ] - Verify that the data extraction completes in less than 1ms per row (regardless of the number of rows).
 - ***Functional Tests***:
   - [ ] - Verify that the data extraction retrieves exactly 4 fields per row.
 - ***Data Integrity Tests***:

@@ -16,13 +16,14 @@ def connection_params():
 
 
 def test_get_db_connection_success(mocker, connection_params):
+    # Arrange
     mock_connection = MagicMock()
     mock_connect = mocker.patch(
         'psycopg2.connect', return_value=mock_connection
     )
-
+    # Act
     connection = get_db_connection(connection_params)
-
+    # Assert
     mock_connect.assert_called_once_with(**connection_params)
     assert connection == mock_connection
 
@@ -55,4 +56,22 @@ def test_get_db_connection_failure(mocker, connection_params):
     mock_connect.assert_called_once_with(**connection_params)
     mock_logger.error.assert_called_once_with(
         "Failed to connect to the database: Connection error"
+    )
+
+
+def test_get_db_connection_timeout_failure(mocker, connection_params):
+    mocker.patch(
+        'psycopg2.connect',
+        side_effect=psycopg2.OperationalError("timeout")
+    )
+    mock_logger = mocker.patch('utils.db_utils.logger')
+
+    with pytest.raises(DatabaseConnectionError) as excinfo:
+        get_db_connection(connection_params)
+
+    assert str(excinfo.value) == (
+        "Failed to connect to the database: timeout"
+    )
+    mock_logger.error.assert_called_once_with(
+        "Failed to connect to the database: timeout"
     )

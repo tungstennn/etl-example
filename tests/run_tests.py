@@ -1,6 +1,7 @@
 import os
 import sys
 import subprocess
+from config.env_config import setup_env
 
 # Define test directories and corresponding coverage targets
 TEST_CONFIG = {
@@ -100,12 +101,13 @@ def create_cov_command_str(test_dir, cov_sources):
         # '&& coverage report -m && coverage html '
         # '&& coverage report --fail-under=90'
         # Moved options to .coveragerc file
-        f'ENV=test coverage run -m pytest --verbose {test_dir} '
+        f'coverage run -m pytest --verbose {test_dir} '
         '&& coverage report -m'
     )
 
 
 def main():
+    setup_env(['None', 'test'])
     # Get the argument passed to run_tests 
     command = sys.argv[1]
 

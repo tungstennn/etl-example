@@ -14,12 +14,12 @@ logger = setup_logger(
 def extract_data():
     try:
         # Set up performance recording for transaction extraction
-        extract_transactions_execution_time = timeit.timeit(
-            "extract_transactions()",
-            globals=globals(),
-            number=1
-        )
+        start_time = timeit.default_timer()
         transactions = extract_transactions()
+        extract_transactions_execution_time = (
+            timeit.default_timer() - start_time
+        )
+
         log_transactions_success(
             transactions.shape,
             extract_transactions_execution_time

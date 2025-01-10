@@ -1,6 +1,15 @@
 import os
+import logging
+from utils.logging_utils import setup_logger
 from typing import Dict
-from dotenv import load_dotenv
+
+
+class DatabaseConfigError(Exception):
+    pass
+
+
+# Configure the logger
+logger = setup_logger(__name__, 'database.log', level=logging.DEBUG)
 
 
 def load_db_config() -> Dict[str, Dict[str, str]]:
@@ -9,39 +18,49 @@ def load_db_config() -> Dict[str, Dict[str, str]]:
     Set this with the appropriate values in the .env file
     or in the deployment environment.
     Run with the ENV environment variable set to the
-    appropriate environment, so for tests:
-        Unix: ENV=test python scripts/run_etl.py
-        Windows PS: $env:ENV="test"; python scripts\run_etl.py
-        Windows CMD: set ENV=test && python scripts\run_etl.py
-    Other environments are dev and prod
+    appropriate environment, so for dev environment:
+        run_etl dev
+    Other environments are test and prod
     :return: Dictionary containing source and target database
     connection parameters.
     """
-    # env = os.getenv('ENV', 'dev')
-    env = os.getenv('ENV')
 
-    # Throw an error or load the appropriate .env file
-    if env is None:
-        raise KeyError('ENV variable not set')
+    print("Running load_db_config")
 
-    env_file = '.env' if env == 'prod' else f'.env.{env}'
-    load_dotenv(env_file)
+    for key in list(os.environ):
+        if key.startswith('SOURCE_DB_') or key.startswith('TARGET_DB_'):
+            print(f"Key found in db_config: {key}, value: {os.getenv(key)}")
 
     config = {
         'source_database': {
-            'dbname': os.getenv('SOURCE_DB_NAME'),
-            'user': os.getenv('SOURCE_DB_USER'),
-            'password': os.getenv('SOURCE_DB_PASSWORD'),
-            'host': os.getenv('SOURCE_DB_HOST'),
-            'port': os.getenv('SOURCE_DB_PORT')
+            'dbname': os.getenv('SOURCE_DB_NAME', 'error'),
+            'user': os.getenv('SOURCE_DB_USER', 'error'),
+            'password': os.getenv('SOURCE_DB_PASSWORD', ''),
+            'host': os.getenv('SOURCE_DB_HOST', 'error'),
+            'port': os.getenv('SOURCE_DB_PORT', '5432')
         },
         'target_database': {
-            'dbname': os.getenv('TARGET_DB_NAME'),
-            'user': os.getenv('TARGET_DB_USER'),
-            'password': os.getenv('TARGET_DB_PASSWORD'),
-            'host': os.getenv('TARGET_DB_HOST'),
-            'port': os.getenv('TARGET_DB_PORT')
+            'dbname': os.getenv('TARGET_DB_NAME', 'error'),
+            'user': os.getenv('TARGET_DB_USER', 'error'),
+            'password': os.getenv('TARGET_DB_PASSWORD', ''),
+            'host': os.getenv('TARGET_DB_HOST', 'error'),
+            'port': os.getenv('TARGET_DB_PORT', '5432')
         }
     }
 
+    validate_db_config(config)
+
     return config
+
+
+def validate_db_config(config):
+    for db_key, db_config in config.items():
+        for key, value in db_config.items():
+            if value == 'error':
+                logger.setLevel(logging.ERROR)
+                logger.error(
+                    f"Configuration error: {db_key} {key} is set to 'error'"
+                )
+                raise DatabaseConfigError(
+                    f"Configuration error: {db_key} {key} is set to 'error'"
+                )
