@@ -3,9 +3,8 @@ import logging
 from utils.logging_utils import setup_logger
 from utils.db_utils import QueryExecutionError
 
-
 # Configure the logger
-logger = setup_logger(__name__, '../../logs/database_query.log')
+logger = setup_logger(__name__, 'database_query.log', level=logging.DEBUG)
 
 
 def execute_extract_query(query, connection):

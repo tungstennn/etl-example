@@ -2,7 +2,7 @@ import logging
 from utils.logging_utils import setup_logger
 from utils.db_utils import QueryExecutionError
 
-logger = setup_logger(__name__, '../logs/database_query.log')
+logger = setup_logger(__name__, 'database_query.log', level=logging.DEBUG)
 
 
 def import_sql_query(filename):

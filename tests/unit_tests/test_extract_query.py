@@ -8,7 +8,7 @@ from etl.extract.extract_query import (
 )
 
 
-def test_your_function_calls_pandas(mocker):
+def test_function_calls_pandas_read_sql_query(mocker):
     mock_read_sql = mocker.patch('pandas.read_sql_query')
     mock_connection = MagicMock()
     query = "SELECT * FROM transactions"

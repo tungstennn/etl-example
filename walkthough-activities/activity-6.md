@@ -208,7 +208,7 @@ then it should complete in less than 1 minute.
 - ***Code Quality Tests***:
   - [ ] - SQL queries pass linting and formatting checks.
   - [ ] - Python scripts pass linting and formatting checks.
-  - [ - ] Test coverage on the database extraction script is at least 90%.
+  - [ ] Test coverage on the database extraction script is at least 90%.
 
 ---
 
@@ -659,14 +659,14 @@ To be able to lint this using ***SQLFluff*** our run tests script has some code 
 
 We will need to write a function to execute the SQL query and return the results.  We will also need to write tests to verify the functionality of the function.
 
-The tests we need can be anticipated, so we can test-drive the function by writing the tests first.  But first we can unit test that the SQL query is imported and that we call the query.  We are going to be importing the result into a pandas DataFrame, so we can verify our logic before integrating by verifying that the function we write calls the pandas `read_sql_query` function.  The function will need to take a query and a connection object as parameters and we'll mock these in our test.
+The tests we need can be anticipated, so we can test-drive the function by writing the tests first.  But first we can unit test that the SQL query is imported and that we call the query.  We are going to be importing the result into a pandas DataFrame, so we can verify our logic before integrating by verifying that the function we write calls the pandas `read_sql_query` function.  The function will need to take a query and a connection object as parameters and we'll mock these in our unit test before using the actual query and connection object in our integration test.
 
 <!--
 ```python
 from unittest.mock import MagicMock
 from etl.extract.extract_query import execute_extract_query
 
-def test_your_function_calls_pandas(mocker):
+def test_function_calls_pandas_read_sql_query(mocker):
     mock_read_sql = mocker.patch('pandas.read_sql_query')
     mock_connection = MagicMock()
     query = "SELECT * FROM transactions"
@@ -798,3 +798,272 @@ We can write a function to import the SQL query from a file.  This will help wit
 
 <!--
 ```python
+import pytest
+from utils.db_utils import QueryExecutionError
+from utils.sql_utils import import_sql_query
+
+def test_import_sql_query_success_logging(mocker):
+    # Setup
+    filename = "tests/unit_tests/test_data/test_query.sql"
+    expected_query = "SELECT * FROM test_table"
+    mocker.patch("builtins.open", mocker.mock_open(read_data=expected_query))
+    mock_logger = mocker.patch("utils.sql_utils.logger")
+
+    # Run
+    result = import_sql_query(filename)
+
+    # Check
+    mock_logger.info.assert_called_once_with(
+        f"Successfully imported query from {filename}"
+    )
+    assert result == expected_query
+
+def test_import_sql_query_failure_logging(mocker):
+    # Setup
+    filename = "tests/unit_tests/test_data/missing_query.sql"
+    error_message = f"Failed to import query: {filename} not found"
+    mocker.patch(
+        "builtins.open",
+        side_effect=FileNotFoundError(error_message)
+    )
+    mock_logger = mocker.patch("utils.sql_utils.logger")
+
+    # Run and check
+    with pytest.raises(QueryExecutionError):
+        import_sql_query(filename)
+
+    mock_logger.error.assert_called_once_with(error_message)
+```
+-->
+
+The failing tests lead us to write the function.
+
+<!--
+```python
+import logging
+from utils.logging_utils import setup_logger
+from utils.db_utils import QueryExecutionError
+
+logger = setup_logger(__name__, '../logs/database_query.log')
+
+def import_sql_query(filename):
+    try:
+        with open(filename, 'r') as file:
+            imported_query = file.read().replace('\n', ' ').strip()
+            logger.info(f"Successfully imported query from {filename}")
+            return imported_query
+    except FileNotFoundError as e:
+        logger.setLevel(logging.ERROR)
+        logger.error(f"Failed to import query: {filename} not found")
+        raise QueryExecutionError(f"Failed to import query: {e}")
+```
+-->
+
+---
+
+#### Progress Check
+
+- [x] - 1. Create a connection to the database.
+- [x] - 2. Write a SQL query to extract the data.
+- [x] - 3. Write a function to import the SQL query.
+- [x] - 4. Write a function to execute the SQL query.
+- [ ] - 5. Put them all together to extract the transactions data.
+
+---
+
+### 5. Put them all together to extract the transactions data
+
+We can now write a function to put all of this together to extract the transactions data.  We will need to write tests to verify the functionality of the function.
+
+This file will live in the `etl/extract` folder and will be called `extract_transactions.py`.
+
+It will be tested via integration - although we will need to add some logging to the successful part of the execute_extract_query function to meet the Acceptance Criteria and Definition of Done.
+
+We will also need to write tests to verify the performance of the function and to ensure the criteria for these are met.
+
+These Acceptance Criteria are:
+
+### Data Extraction
+
+- Given the database contains 10,500 rows with 4 fields, when the data is extracted, then it should complete in less than ***1ms per row***. #16
+
+---
+
+----
+
+### Summary of New Files and Existing File Changes for Extracting Transactions
+
+#### New Production Files
+
+1. [etl/sql/extract_transactions.sql](../etl/sql/extract_transactions.sql)
+   - Contains:
+     - The SQL query to extract all 4 fields for all records from the transactions table in the database.
+2. [utils/sql_utils.py](../utils/sql_utils.py)
+   - Contains:
+     - Function to import the SQL query from a file. (`utils.sql_utils.import_sql_query()`)
+3. [etl/extract/extract_query.py](../etl/extract/extract_query.py)
+   - Contains:
+     - Call to run the query and return the results as a DataFrame. (`etl.extract.extract_query.execute_extract_query()`)
+4. [extract_transactions.py](../etl/extract/extract_transactions.py)
+   - Contains calls to:
+     - Import the SQL query (`utils.sql_utils.import_sql_query()`)
+     - Connect to the database (`utils.db_utils.get_db_connection()`)
+     - Execute the query and return the DataFrame as a result (`etl.extract.extract_query.execute_extract_query()`)
+
+#### Modified Production Files
+
+1. [utils/db_utils.py](../utils/db_utils.py)
+   - Added a custom exception for query execution errors. (`utils.db_utils.QueryExecutionError`)
+2. [etl/extract/extract.py](../etl/extract/extract.py)
+   - Set up a logger for this module. (`etl.extract.extract.logger`)
+   - Added a try/except block
+     - `try` block:
+       - Set up performance recording.
+       - Get the transactions data from the source (call to `etl.extract.extract_transactions()`)
+       - Log the success of the data extraction.
+     - `except` block:
+       - Log the failure of the data extraction.
+       - Raise an Exception to be handled by the calling function.
+   - Added a function called `log_transactions_success()` to log the success of the data extraction.
+      - Logs success
+      - Logs the number of rows and columns extracted
+      - Logs the time taken to extract the data
+      - Logs the performance of the data extraction
+        - If the performance is above the threshold, logs an info message
+        - If the performance is below the threshold, logs a warning
+
+---
+
+#### New Test Files
+
+#### Unit Tests
+
+1. [tests/unit_tests/test_extract_query.py](../tests/unit_tests/test_extract_query.py)
+   - Contains tests:
+     - `test_function_calls_pandas_read_sql_query()`
+     - `test_execute_extract_query_invalid_query()`
+     - `test_execute_extract_query_invalid_query_logging()`
+2. [tests/unit_tests/test_sql_utils.py](../tests/unit_tests/test_sql_utils.py)
+   - Contains tests:
+     - `test_import_sql_query_success_logging()`
+     - `test_import_sql_query_failure_logging()`
+
+#### Integration Tests
+
+1. [tests/integration_tests/test_extract_transactions_integration.py](../tests/integration_tests/test_extract_transactions_integration.py)
+   - Contains tests:
+     - `test_extract_transactions_returns_all_data()`
+     - `test_extract_transactions_performance()`
+
+---
+
+## User Story 1 Progress Check
+
+### Definition of Done
+
+[/] Means ***IN PROGRESS*** and [x] means ***DONE***.
+
+#### Code Quality
+
+- Code follows the project's coding standards and best practices.
+  - ***SQL***:
+    - [/] - **Query Performance**: Queries should execute in less than 2 seconds for typical operations.
+    - [/] - **Readability and Maintainability**: Queries should be formatted for readability with consistent indentation, meaningful aliases, and comments.
+    - [/] - **Use of Best Practices**: Follow best practices such as avoiding `SELECT *`, using `JOIN`s appropriately, and ensuring proper *indexing*.
+    - [/] - **Linting**: SQL code should be linted for syntax errors and compliance with best practices.
+  - ***Python***:
+    - [/] - **PEP 8 Compliance**: Code should follow PEP 8 guidelines. Use a linter (e.g., flake8) to ensure compliance.
+    - [/] - **Code Readability**: Use meaningful variable names, consistent indentation, and comments to explain complex logic.
+    - [/] - **Modularity**: Functions and classes should be used to encapsulate logic and promote reuse.
+    - [/] - **Error Handling**: Use `try-except` blocks to handle exceptions and provide meaningful error messages.
+  - ***Pandas***:
+    - **Efficient Data Manipulation**: Use vectorised operations instead of loops for data manipulation.
+    - **Memory Usage**: Use appropriate data types and avoid loading unnecessary data into memory.
+    - **Data Validation**: Check for missing values, data types, and data ranges before performing operation
+- Code is reviewed and approved by at least one other team member.
+- Code is free of critical and high-severity bugs.
+
+---
+
+### Testing
+
+- [/] - **Unit tests** are written and cover all new functionality.
+- [/] - **Integration tests** are written and cover interactions between components.
+- **Component tests** are written and validate individual parts of the system.
+- [/] - All tests pass successfully.
+- [/] - ***Test coverage*** meets the the ***90%*** threshold for the project.
+
+---
+
+### Documentation
+
+- [/] -Code is documented with clear and concise comments.
+- User-facing documentation is updated to reflect new or changed functionality.
+- [/] -Any relevant diagrams or flowcharts are updated.
+
+---
+
+### Performance
+
+- Performance benchmarks are met (e.g., data extraction and cleaning times are within acceptable limits).
+  - [x] **Database Extraction**: *Less than 1ms per row* for *rows* with *4 fields*.
+  - **CSV Extraction**: *Less than 30 seconds* for *5,200 rows* with *5 columns*.
+  - **Data Cleaning**: *Less than 1 second* per *1,000 rows*.
+  - **Data Transformation**: *Joins* and *aggregations* take *less than 5 seconds* per *10,000 rows*.
+  - **Data Loading**: *Less than 5 seconds* per *10,000 rows*.
+  - **End-to-End Processing**: The entire ETL process *completes within 30 minutes* for a full dataset.
+  - No significant performance regressions are introduced.
+
+---
+
+### Data Quality
+
+- Data is validated for accuracy, completeness, and consistency.
+  - **Accuracy**: *99%* of records are accurate.
+  - **Completeness**: *100%* of expected columns and rows are present.
+  - **Consistency**: *100%* of records have consistent formats and values.
+  - **Integrity**: *100%* of records maintain integrity constraints.
+  - **Error Rate**: *Less than 1%* error rate.
+  - **Validation Time**: *Less than 1 second* per *1,000 rows*.
+- Data cleaning rules are applied, and logs are generated for any issues encountered.
+  - **Duplicate Removal Rate**: *100%* of duplicates removed (e.g., 0% duplicates remain).
+  - **Null Handling Rate**: *100%* of missing or invalid fields resolved.
+  - **Data Completeness**: *100%* of *expected* *columns* and *rows* are present.
+  - **Data Consistency**: *100%* of records have consistent formats.
+  - **Cleaning Time**: *Less than 1 second* per *1,000 rows*.
+  - **Error Rate**: *Less than 1%* error rate.
+- Data transformation logic is verified and tested.
+
+---
+
+### Deployment
+
+- Code is deployed to the appropriate environment (e.g., staging, production).
+- Deployment scripts and configurations are updated as needed.
+- Deployment is verified and tested in the target environment.
+
+---
+
+## Acceptance Criteria
+
+### Data Extraction
+
+- [x] - Given the database contains 10,500 rows with 4 fields, when the data is extracted, then it should complete in less than 1ms per row. #16
+
+#### Checklist
+
+- ***Performance Test***:
+  - [x] - Verify that the data extraction completes in less than 1 minute (regardless of the number of rows).
+- ***Functional Tests***:
+  - [x] - Verify that the data extraction retrieves exactly 4 fields per row.
+- ***Data Integrity Tests***:
+  - [x] - Verify data consistency between the extracted data and the source database.
+  - [x] - Verify data accuracy for a sample of rows.
+- ***Reliability Tests***:
+  - [x] - Verify that the code handles a database connection error gracefully
+  - [x] - Verify that the code handles a database query error gracefully
+  - [x] - Verify that the code handles a database timeout error gracefully
+- ***Code Quality Tests***:
+  - [x] - SQL queries pass linting and formatting checks.
+  - [x] - Python scripts pass linting and formatting checks.
+  - [x] - Test coverage on the database extraction script is at least 90%.

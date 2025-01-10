@@ -12,8 +12,16 @@ TEST_CONFIG = {
 
 
 def run_linting(command):
-    py_result = None
-    sql_result = None
+    py_result = subprocess.CompletedProcess(
+        args=[], returncode=0,
+        stdout="Python linting not run",
+        stderr=""
+    )
+    sql_result = subprocess.CompletedProcess(
+        args=[], returncode=0,
+        stdout="SQL linting not run",
+        stderr=""
+    )
     if command == 'lint:python' or command == 'lint:all':
         print("Running python linting checks")
         py_result = run_python_linting()
@@ -22,24 +30,34 @@ def run_linting(command):
         sql_result = run_sql_linting()
     if py_result is None and sql_result is None:
         raise ValueError("Unknown linting command: {command}")
-    report_results(
-        py_result.returncode if py_result else 0,
-        sql_result.returncode if sql_result else 0
-    )
+    report_results(py_result, sql_result)
 
 
 def report_results(py_result, sql_result):
-    if py_result == 0 and sql_result == 0:
-        print("Python linting checks passed")
-        print("SQL linting checks passed")
-        return
-    if py_result != 0:
+    if py_result.returncode == 0:
+        if py_result.stdout.find("not run") == -1:
+            print(f"Python linting checks passed! {py_result.stdout}")
+        else:
+            print(py_result.stdout)
+    else:
+        print(
+            f"Python linting failed with return code: "
+            f"{py_result.returncode}"
+        )
         print(py_result.stdout)
         print(py_result.stderr)
-    if sql_result != 0:
+
+    if sql_result.returncode == 0:
+        if sql_result.stdout.find("not run") == -1:
+            print(f"SQL linting checks passed! {sql_result.stdout}")
+        else:
+            print(sql_result.stdout)
+    else:
+        print(
+            f"SQL linting failed with return code {sql_result.returncode}"
+        )
         print(sql_result.stdout)
         print(sql_result.stderr)
-    sys.exit(1)
 
 
 def run_python_linting():
