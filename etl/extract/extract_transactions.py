@@ -6,7 +6,7 @@ from config.db_config import load_db_config
 from etl.extract.extract_query import execute_extract_query
 from utils.sql_utils import import_sql_query
 from utils.db_utils import get_db_connection
-from utils.logging_utils import setup_logger
+from utils.logging_utils import setup_logger, log_extract_success
 
 # Configure the logger
 logger = setup_logger(
@@ -22,6 +22,8 @@ EXTRACT_TRANSACTIONS_QUERY_FILE = os.path.join(
 
 EXPECTED_IMPORT_RATE = 0.001
 
+TYPE = 'TRANSACTIONS from database'
+
 
 def extract_transactions() -> pd.DataFrame:
     try:
@@ -32,9 +34,12 @@ def extract_transactions() -> pd.DataFrame:
             timeit.default_timer() - start_time
         )
 
-        log_transactions_success(
+        log_extract_success(
+            logger,
+            TYPE,
             transactions.shape,
-            extract_transactions_execution_time
+            extract_transactions_execution_time,
+            EXPECTED_IMPORT_RATE
         )
         return transactions
     except Exception as e:
@@ -58,23 +63,23 @@ def extract_transactions_execution() -> pd.DataFrame:
     return transactions_df
 
 
-def log_transactions_success(transactions_shape, execution_time):
-    logger.setLevel(logging.INFO)
-    logger.info("Data extraction successful!")
-    logger.info(
-        f"Extracted {transactions_shape[0]} rows "
-        f"and {transactions_shape[1]} columns"
-    )
-    logger.info(f"Execution time: {execution_time} seconds")
+# def log_transactions_success(transactions_shape, execution_time):
+#     logger.setLevel(logging.INFO)
+#     logger.info("Data extraction successful!")
+#     logger.info(
+#         f"Extracted {transactions_shape[0]} rows "
+#         f"and {transactions_shape[1]} columns"
+#     )
+#     logger.info(f"Execution time: {execution_time} seconds")
 
-    if (execution_time / transactions_shape[0] <= EXPECTED_IMPORT_RATE):
-        logger.info(
-            "Execution time per row: "
-            f"{execution_time / transactions_shape[0]} seconds"
-        )
-    else:
-        logger.setLevel(logging.WARNING)
-        logger.warning(
-            "Execution time per row exceeds 1ms: "
-            f"{execution_time / transactions_shape[0]} seconds"
-        )
+#     if (execution_time / transactions_shape[0] <= EXPECTED_IMPORT_RATE):
+#         logger.info(
+#             "Execution time per row: "
+#             f"{execution_time / transactions_shape[0]} seconds"
+#         )
+#     else:
+#         logger.setLevel(logging.WARNING)
+#         logger.warning(
+#             F"Execution time per row exceeds {EXPECTED_IMPORT_RATE}: "
+#             f"{execution_time / transactions_shape[0]} seconds"
+#         )

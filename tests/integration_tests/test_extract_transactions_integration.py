@@ -1,5 +1,8 @@
 import timeit
-from etl.extract.extract_transactions import extract_transactions
+from etl.extract.extract_transactions import (
+    extract_transactions,
+    EXPECTED_IMPORT_RATE
+)
 
 
 def test_extract_transactions_returns_all_data():
@@ -15,7 +18,6 @@ def test_extract_transactions_returns_all_data():
 
 def test_extract_transaction_performance():
     # Note the change in the performance expectation
-    expected_execution_time_per_row = 0.001  # i.e. 1ms per row
     # Measure the execution time
     execution_time = timeit.timeit(
         "extract_transactions()",
@@ -30,8 +32,8 @@ def test_extract_transaction_performance():
     actual_execution_time_per_row = execution_time / df.shape[0]
 
     # Assert that the execution time is within an acceptable range
-    assert actual_execution_time_per_row <= expected_execution_time_per_row, (
+    assert actual_execution_time_per_row <= EXPECTED_IMPORT_RATE, (
         f"Expected execution time to be less than or equal to "
-        f"{str(expected_execution_time_per_row)} seconds, but got "
+        f"{str(EXPECTED_IMPORT_RATE)} seconds, but got "
         f"{str(actual_execution_time_per_row)} seconds"
     )
