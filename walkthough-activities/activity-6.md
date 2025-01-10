@@ -1082,5 +1082,4 @@ These Acceptance Criteria are:
    - Remember that it is likely that this would not be local so you may need a function to copy the file from, say, an S3 bucket to a local file
    - The file would then be stored in the `data/raw` folder
    - The file is called `customers.csv` and for walkthrough purposes, it is already in the `data/raw` folder
-2. Verify the data extraction process.
-3.
+2. Verify the data extraction process and performance.
