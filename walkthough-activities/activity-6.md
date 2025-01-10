@@ -601,10 +601,10 @@ We will, of course, need to keep an eye on the Code Quality Tests as we add more
 
 ### Next Steps
 
-The next step is to write the SQL query to extract the data from the database.  We will need to consider the following from the Acceptance Criteria::
+The next step is to write the SQL query to extract the data from the database.  We will need to consider the following from the Acceptance Criteria:
 
 - ***Performance Test***:
-  - [ ] - Verify that the data extraction completes in less than 1 minute (regardless of the number of rows).
+  - [ ] - Verify that the data extraction completes in less than 1ms per row (regardless of the number of rows).
 - ***Functional Tests***:
   - [ ] - Verify that the data extraction retrieves exactly 4 fields per row.
 - ***Data Integrity Tests***:
@@ -1067,3 +1067,20 @@ These Acceptance Criteria are:
   - [x] - SQL queries pass linting and formatting checks.
   - [x] - Python scripts pass linting and formatting checks.
   - [x] - Test coverage on the database extraction script is at least 90%.
+
+---
+
+## Extract Customers from CSV
+
+```plaintext
+- Given the CSV file contains 5,200 rows with 5 columns, when the data is extracted, then it should complete in less than 30 seconds. #17
+```
+
+### Plan
+
+1. Load the data from the supplied CSV file into a pandas DataFrame.
+   - Remember that it is likely that this would not be local so you may need a function to copy the file from, say, an S3 bucket to a local file
+   - The file would then be stored in the `data/raw` folder
+   - The file is called `customers.csv` and for walkthrough purposes, it is already in the `data/raw` folder
+2. Verify the data extraction process.
+3.

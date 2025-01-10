@@ -1,25 +1,47 @@
+import logging
 import os
 import pandas as pd
+import timeit
 from config.db_config import load_db_config
 from etl.extract.extract_query import execute_extract_query
 from utils.sql_utils import import_sql_query
 from utils.db_utils import get_db_connection
+from utils.logging_utils import setup_logger
+
+# Configure the logger
+logger = setup_logger(
+    __name__,
+    'extract_data.log',
+    level=logging.DEBUG
+)
 
 EXTRACT_TRANSACTIONS_QUERY_FILE = os.path.join(
     os.path.dirname(__file__),
     '../sql/extract_transactions.sql'
 )
 
-""" This was causing errors when trying to set the environment!
-Python sets this as soon as the module is imported
-So when run_etl.py imports this module, it sets runs the function
-Meaning that the environment variables are NOT set before the script is run
-"""
-# DB_CONFIG = load_db_config()
-# Now called directly in the extract_transactions function
-
 
 def extract_transactions() -> pd.DataFrame:
+    try:
+        # Set up performance recording for transaction extraction
+        start_time = timeit.default_timer()
+        transactions = extract_transactions_execution()
+        extract_transactions_execution_time = (
+            timeit.default_timer() - start_time
+        )
+
+        log_transactions_success(
+            transactions.shape,
+            extract_transactions_execution_time
+        )
+        return transactions
+    except Exception as e:
+        logger.setLevel(logging.ERROR)
+        logger.error(f"Failed to extract data: {e}")
+        raise Exception(f"Failed to extract data: {e}")
+
+
+def extract_transactions_execution() -> pd.DataFrame:
     # Import the SQL query
     # Connect to the database
     # Execute the query
@@ -32,3 +54,25 @@ def extract_transactions() -> pd.DataFrame:
     # print(transactions_df)
     # Initially added to debug during dev - remove before production
     return transactions_df
+
+
+def log_transactions_success(transactions_shape, execution_time):
+    logger.setLevel(logging.INFO)
+    logger.info("Data extraction successful!")
+    logger.info(
+        f"Extracted {transactions_shape[0]} rows "
+        f"and {transactions_shape[1]} columns"
+    )
+    logger.info(f"Execution time: {execution_time} seconds")
+
+    if (execution_time / transactions_shape[0] <= 0.001):
+        logger.info(
+            "Execution time per row: "
+            f"{execution_time / transactions_shape[0]} seconds"
+        )
+    else:
+        logger.setLevel(logging.WARNING)
+        logger.warning(
+            "Execution time per row exceeds 1ms: "
+            f"{execution_time / transactions_shape[0]} seconds"
+        )
