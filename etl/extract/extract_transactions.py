@@ -20,6 +20,8 @@ EXTRACT_TRANSACTIONS_QUERY_FILE = os.path.join(
     '../sql/extract_transactions.sql'
 )
 
+EXPECTED_IMPORT_RATE = 0.001
+
 
 def extract_transactions() -> pd.DataFrame:
     try:
@@ -65,7 +67,7 @@ def log_transactions_success(transactions_shape, execution_time):
     )
     logger.info(f"Execution time: {execution_time} seconds")
 
-    if (execution_time / transactions_shape[0] <= 0.001):
+    if (execution_time / transactions_shape[0] <= EXPECTED_IMPORT_RATE):
         logger.info(
             "Execution time per row: "
             f"{execution_time / transactions_shape[0]} seconds"
