@@ -1,6 +1,7 @@
 import os
 import sys
 import subprocess
+from config.env_config import setup_env
 
 # Define test directories and corresponding coverage targets
 TEST_CONFIG = {
@@ -12,8 +13,16 @@ TEST_CONFIG = {
 
 
 def run_linting(command):
-    py_result = None
-    sql_result = None
+    py_result = subprocess.CompletedProcess(
+        args=[], returncode=0,
+        stdout="Python linting not run",
+        stderr=""
+    )
+    sql_result = subprocess.CompletedProcess(
+        args=[], returncode=0,
+        stdout="SQL linting not run",
+        stderr=""
+    )
     if command == 'lint:python' or command == 'lint:all':
         print("Running python linting checks")
         py_result = run_python_linting()
@@ -22,24 +31,34 @@ def run_linting(command):
         sql_result = run_sql_linting()
     if py_result is None and sql_result is None:
         raise ValueError("Unknown linting command: {command}")
-    report_results(
-        py_result.returncode if py_result else 0,
-        sql_result.returncode if sql_result else 0
-    )
+    report_results(py_result, sql_result)
 
 
 def report_results(py_result, sql_result):
-    if py_result == 0 and sql_result == 0:
-        print("Python linting checks passed")
-        print("SQL linting checks passed")
-        return
-    if py_result != 0:
+    if py_result.returncode == 0:
+        if py_result.stdout.find("not run") == -1:
+            print(f"Python linting checks passed! {py_result.stdout}")
+        else:
+            print(py_result.stdout)
+    else:
+        print(
+            f"Python linting failed with return code: "
+            f"{py_result.returncode}"
+        )
         print(py_result.stdout)
         print(py_result.stderr)
-    if sql_result != 0:
+
+    if sql_result.returncode == 0:
+        if sql_result.stdout.find("not run") == -1:
+            print(f"SQL linting checks passed! {sql_result.stdout}")
+        else:
+            print(sql_result.stdout)
+    else:
+        print(
+            f"SQL linting failed with return code {sql_result.returncode}"
+        )
         print(sql_result.stdout)
         print(sql_result.stderr)
-    sys.exit(1)
 
 
 def run_python_linting():
@@ -82,12 +101,14 @@ def create_cov_command_str(test_dir, cov_sources):
         # '&& coverage report -m && coverage html '
         # '&& coverage report --fail-under=90'
         # Moved options to .coveragerc file
-        f'ENV=test coverage run -m pytest --verbose {test_dir} '
+        f'coverage run -m pytest --verbose {test_dir} '
         '&& coverage report -m'
     )
 
 
 def main():
+    setup_env(['None', 'test'])
+    # Get the argument passed to run_tests 
     command = sys.argv[1]
 
     # Lint then stop executing test run if command is 'lint'

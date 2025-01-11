@@ -337,6 +337,6 @@ We made it!  We're now ready to start coding the solution.  However, we should n
 
 ### Activity 6: Extract Data
 
-In [Activity 6](./wlakthrough-activities/activity-6.md), you will be walked through the first part of the process of extracting data from the datasources.  Your team will then take on the responsibility of completing the extraction processes.
+In [Activity 6](./walkthrough-activities/activity-6.md), you will be walked through the first part of the process of extracting data from the datasources.  Your team will then take on the responsibility of completing the extraction processes.
 
 ---

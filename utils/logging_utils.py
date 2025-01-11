@@ -2,10 +2,10 @@ import logging
 import os
 
 
-def setup_logger(name, log_file, level=logging.ERROR):
+def setup_logger(name, log_file, level=logging.DEBUG):
     """Function to setup a logger; can be used in multiple modules."""
     # Ensure the logs directory exists
-    log_directory = os.path.dirname(log_file)
+    log_directory = os.path.join(os.path.dirname(__file__), '../logs')
     os.makedirs(log_directory, exist_ok=True)
 
     # Create a logger
@@ -13,7 +13,7 @@ def setup_logger(name, log_file, level=logging.ERROR):
     logger.setLevel(level)
 
     # Create file handler
-    file_handler = logging.FileHandler(log_file)
+    file_handler = logging.FileHandler(os.path.join(log_directory, log_file))
     file_handler.setLevel(level)
 
     # Create console handler
@@ -28,7 +28,30 @@ def setup_logger(name, log_file, level=logging.ERROR):
     console_handler.setFormatter(formatter)
 
     # Add the handlers to the logger
-    logger.addHandler(file_handler)
-    logger.addHandler(console_handler)
+    if not logger.handlers:
+        logger.addHandler(file_handler)
+        logger.addHandler(console_handler)
 
     return logger
+
+
+def log_extract_success(logger, type, shape, execution_time, expected_rate):
+    logger.setLevel(logging.INFO)
+    logger.info(f"Data extraction successful for {type}!")
+    logger.info(
+        f"Extracted {shape[0]} rows "
+        f"and {shape[1]} columns"
+    )
+    logger.info(f"Execution time: {execution_time} seconds")
+
+    if (execution_time / shape[0] <= expected_rate):
+        logger.info(
+            "Execution time per row: "
+            f"{execution_time / shape[0]} seconds"
+        )
+    else:
+        logger.setLevel(logging.WARNING)
+        logger.warning(
+            F"Execution time per row exceeds {expected_rate}: "
+            f"{execution_time / shape[0]} seconds"
+        )

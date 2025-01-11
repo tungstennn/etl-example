@@ -12,7 +12,7 @@ class QueryExecutionError(Exception):
 
 
 # Configure the logger
-logger = setup_logger(__name__, '../../logs/database.log')
+logger = setup_logger(__name__, 'database.log', level=logging.DEBUG)
 
 
 def get_db_connection(connection_params):

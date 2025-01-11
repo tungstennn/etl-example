@@ -1,5 +1,4 @@
 import pytest
-
 import pandas as pd
 from unittest.mock import MagicMock, call
 from etl.extract.extract_query import (
@@ -8,7 +7,7 @@ from etl.extract.extract_query import (
 )
 
 
-def test_your_function_calls_pandas(mocker):
+def test_function_calls_pandas_read_sql_query(mocker):
     mock_read_sql = mocker.patch('pandas.read_sql_query')
     mock_connection = MagicMock()
     query = "SELECT * FROM transactions"
@@ -47,7 +46,7 @@ def test_execute_extract_query_invalid_query_logging(mocker):
     with pytest.raises(QueryExecutionError):
         execute_extract_query(query, mock_connection)
 
-    print(mock_logger.error.call_args_list)
+    # print(mock_logger.error.call_args_list)
 
     mock_logger.error.assert_has_calls([
         call("Failed to execute query: Invalid query"),
