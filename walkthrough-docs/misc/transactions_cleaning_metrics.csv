@@ -1,0 +1,2 @@
+rows_in_dataset, duplicates, missing_transaction_date, missing_amount, invalid_amount, duplicates_with_missing_invalid, remaining_rows_after_cleaning
+10500, 518, 208, 46, 41, 15, 9702
