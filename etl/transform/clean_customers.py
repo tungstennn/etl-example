@@ -1,4 +1,5 @@
 import pandas as pd
+from utils.file_utils import save_dataframe_to_csv
 
 
 def clean_customers(customers: pd.DataFrame) -> pd.DataFrame:
@@ -16,7 +17,9 @@ def clean_customers(customers: pd.DataFrame) -> pd.DataFrame:
     customers['is_active'] = customers['is_active'].astype(bool)
 
     # Save the dataframe as a CSV for logging purposes
-    customers.to_csv('../../data/processed/cleaned_customers.csv', index=False)
+    output_dir = '../../data/processed'
+    file_name = 'cleaned_customers.csv'
+    save_dataframe_to_csv(customers, output_dir, file_name)
 
     return customers
 
@@ -32,6 +35,10 @@ def standardise_is_active(value: str) -> bool:
 
 
 """
+ADDITIONAL FUNCTIONALITY NEEDED:
+
+Logging
+
 ADDITIONAL TESTS NEEDED TO BE DONE:
 
 CLEANING:

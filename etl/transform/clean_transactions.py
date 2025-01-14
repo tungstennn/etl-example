@@ -1,5 +1,6 @@
 import pandas as pd
 from utils.date_utils import standardise_date
+from utils.file_utils import save_dataframe_to_csv
 
 
 def clean_transactions(transactions: pd.DataFrame) -> pd.DataFrame:
@@ -12,10 +13,10 @@ def clean_transactions(transactions: pd.DataFrame) -> pd.DataFrame:
     transactions['amount'] = transactions['amount'].astype('float64')
 
     # Save the dataframe as a CSV for logging purposes
-    transactions.to_csv(
-        '../../data/processed/cleaned_transactions.csv',
-        index=False
-    )
+    # Ensure the directory exists
+    output_dir = '../../data/processed'
+    file_name = 'cleaned_transactions.csv'
+    save_dataframe_to_csv(transactions, output_dir, file_name)
 
     return transactions
 
@@ -38,6 +39,10 @@ def standardise_date_format(transactions: pd.DataFrame) -> pd.DataFrame:
     return transactions
 
 """
+ADDITIONAL FUNCTIONALITY NEEDED:
+
+Logging
+
 ADDITIONAL TESTS NEEDED TO BE DONE:
 
 CLEANING:

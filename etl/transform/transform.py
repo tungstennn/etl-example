@@ -1,6 +1,7 @@
 import pandas as pd
 from etl.transform.clean_transactions import clean_transactions
 from etl.transform.clean_customers import clean_customers
+from utils.file_utils import save_dataframe_to_csv
 
 
 def transform_data(data) -> pd.DataFrame:
@@ -20,15 +21,18 @@ def merge_transactions_customers(
     merged_data = pd.merge(transactions, customers, on='customer_id')
 
     # Save the merged data to a CSV file
-    merged_data.to_csv(
-        '../../data/processed/merged_data.csv',
-        index=False
-    )
+    output_dir = '../../data/processed/'
+    file_name = 'merged_data.csv'
+    save_dataframe_to_csv(merged_data, output_dir, file_name)
 
     return merged_data
 
 
 """
+ADDITIONAL FUNCTIONALITY NEEDED:
+
+Logging
+
 ADDITIONAL TESTS NEEDED TO BE DONE:
 
 CLEANING:
