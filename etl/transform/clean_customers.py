@@ -14,11 +14,15 @@ def clean_customers(customers: pd.DataFrame) -> pd.DataFrame:
     customers = customers.drop_duplicates()
     # Set the is_active column to boolean
     customers['is_active'] = customers['is_active'].astype(bool)
+
     return customers
 
 
-def standardise_is_active(is_active_value: str) -> bool:
-    if str(is_active_value).lower() == 'active' or str(is_active_value) == '1':
-        return True
-    else:
+def standardise_is_active(value: str) -> bool:
+    if pd.isna(value):
         return False
+    if isinstance(value, bool):
+        return value
+    if value.lower() in ['active', '1', 'true']:
+        return True
+    return False  # Default to False for any other cases

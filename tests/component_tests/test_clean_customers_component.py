@@ -8,13 +8,11 @@ def test_clean_customers():
     test_data_path = os.path.join(base_path, '../test_data/test_customers.csv')
     expected_data_path = os.path.join(
         base_path,
-        '../test_data/expected_customer_clean_results.csv'
+        '../test_data/expected_customers_clean_results.csv'
     )
 
     df = pd.read_csv(test_data_path)
     expected_df = pd.read_csv(expected_data_path)
-    
-    print(expected_df['is_active'].dtype)
 
     result = clean_customers(df)
 
