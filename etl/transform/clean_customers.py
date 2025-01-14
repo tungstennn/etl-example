@@ -17,7 +17,7 @@ def clean_customers(customers: pd.DataFrame) -> pd.DataFrame:
     customers['is_active'] = customers['is_active'].astype(bool)
 
     # Save the dataframe as a CSV for logging purposes
-    output_dir = '../../data/processed'
+    output_dir = './data/processed'
     file_name = 'cleaned_customers.csv'
     save_dataframe_to_csv(customers, output_dir, file_name)
 

@@ -1,17 +1,21 @@
 import pandas as pd
+from typing import Tuple
 from etl.transform.clean_transactions import clean_transactions
 from etl.transform.clean_customers import clean_customers
 from utils.file_utils import save_dataframe_to_csv
 
 
-def transform_data(data) -> pd.DataFrame:
+def transform_data(data) -> Tuple[pd.DataFrame]:
     cleaned_transactions = clean_transactions(data[0])
     cleaned_customers = clean_customers(data[1])
     merged_data = merge_transactions_customers(
         cleaned_transactions,
         cleaned_customers
     )
-    return merged_data
+    # Create the aggregated data for high value customers
+    # Clean high-value customers to remove missing values for age /country
+
+    return (merged_data)
 
 
 def merge_transactions_customers(
@@ -21,7 +25,7 @@ def merge_transactions_customers(
     merged_data = pd.merge(transactions, customers, on='customer_id')
 
     # Save the merged data to a CSV file
-    output_dir = '../../data/processed/'
+    output_dir = './data/processed/'
     file_name = 'merged_data.csv'
     save_dataframe_to_csv(merged_data, output_dir, file_name)
 
