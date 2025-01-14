@@ -4,6 +4,8 @@ from etl.transform.clean_transactions import clean_transactions
 from etl.transform.clean_customers import clean_customers
 from utils.file_utils import save_dataframe_to_csv
 
+HIGH_VALUE_LOWER_BOUND = 500
+
 
 def transform_data(data) -> Tuple[pd.DataFrame]:
     cleaned_transactions = clean_transactions(data[0])
@@ -13,9 +15,13 @@ def transform_data(data) -> Tuple[pd.DataFrame]:
         cleaned_customers
     )
     # Create the aggregated data for high value customers
+    high_value_customers = get_high_value_customers(merged_data)
     # Clean high-value customers to remove missing values for age /country
+    cleaned_high_value_customers = high_value_customers.dropna(
+        subset=['age', 'country']
+    )
 
-    return (merged_data)
+    return (merged_data, high_value_customers, cleaned_high_value_customers)
 
 
 def merge_transactions_customers(
@@ -30,6 +36,25 @@ def merge_transactions_customers(
     save_dataframe_to_csv(merged_data, output_dir, file_name)
 
     return merged_data
+
+
+def get_high_value_customers(data: pd.DataFrame) -> pd.DataFrame:
+    # Get the total transaction value for each customer
+    data = data.groupby('customer_id').agg(
+        total_spend=('amount', 'sum'),
+        avg_transaction_value=('amount', 'mean'),
+        name=('name', 'first'),
+        age=('age', 'first'),
+        country=('country', 'first'),
+        is_active=('is_active', 'first')
+    ).reset_index()
+
+    # Get the high value customers
+    high_value_customers = data[
+        data['total_spend'] > HIGH_VALUE_LOWER_BOUND
+    ]
+
+    return high_value_customers
 
 
 """

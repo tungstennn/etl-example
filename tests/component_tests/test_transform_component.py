@@ -36,12 +36,14 @@ def test_transform_data():
     )
 
     # Call the transform_data function with the test data
-    result = transform_data((transactions_data, customers_data))
+    merge_result = transform_data((transactions_data, customers_data))[0]
 
-    result = result.sort_values(by='transaction_id').reset_index(drop=True)
+    merge_result = merge_result.sort_values(by='transaction_id').reset_index(
+        drop=True
+    )
 
     # Assert that the result matches the expected DataFrame
     pd.testing.assert_frame_equal(
-        result,
+        merge_result,
         expected_merged_data
     )
