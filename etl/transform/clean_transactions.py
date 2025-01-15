@@ -14,7 +14,7 @@ def clean_transactions(transactions: pd.DataFrame) -> pd.DataFrame:
 
     # Save the dataframe as a CSV for logging purposes
     # Ensure the directory exists
-    output_dir = './data/processed'
+    output_dir = 'etl/data/processed'
     file_name = 'cleaned_transactions.csv'
     save_dataframe_to_csv(transactions, output_dir, file_name)
 

@@ -142,7 +142,7 @@ cython_debug/
 
 # Data files
 # data/raw/
-# data/processed/
+# etl/data/processed/
 # data/output/
 
 # Logs

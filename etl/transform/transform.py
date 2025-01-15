@@ -15,20 +15,24 @@ def transform_data(data) -> Tuple[pd.DataFrame]:
         cleaned_customers
     )
     # Create the aggregated data for high value customers
+    # This approach would be suitable if the end users want us
+    # to create separate tables of data in the database
     high_value_customers = get_high_value_customers(merged_data)
     save_dataframe_to_csv(
         high_value_customers,
-        './data/processed/',
+        'etl/data/processed/',
         'high_value_customers.csv'
     )
 
     # Clean high-value customers to remove missing values for age /country
+    # This approach would be suitable if the end users want us
+    # to create separate tables of data in the database
     cleaned_high_value_customers = high_value_customers.dropna(
         subset=['age', 'country']
     )
     save_dataframe_to_csv(
         cleaned_high_value_customers,
-        './data/processed/',
+        'etl/data/processed/',
         'cleaned_high_value_customers.csv'
     )
 
@@ -42,7 +46,7 @@ def merge_transactions_customers(
     merged_data = pd.merge(transactions, customers, on='customer_id')
 
     # Save the merged data to a CSV file
-    output_dir = './data/processed/'
+    output_dir = 'etl/data/processed/'
     file_name = 'merged_data.csv'
     save_dataframe_to_csv(merged_data, output_dir, file_name)
 
