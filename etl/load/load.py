@@ -8,6 +8,7 @@ from utils.db_utils import (
     QueryExecutionError
 )
 from utils.logging_utils import setup_logger
+from etl.load.post_load_enrichment import enrich_database_data
 
 
 # Configure the logger
@@ -33,8 +34,9 @@ def load_data(data: tuple):
 
     # Save merged data to an SQL table in target database
     create_merged_data_table(merged_data)
-    # Save high value customers as view of merged data
-    # Save cleaned high value customers as view of high value customers
+
+    # Perform post-load enrichment of the data in the database
+    enrich_database_data()
 
     return None
 
@@ -43,7 +45,6 @@ def create_merged_data_table(data: pd.DataFrame):
     try:
         connection_details = load_db_config()['target_database']
         connection = get_db_connection(connection_details)
-        print(connection)
         data.to_sql(
             'transactions_by_customers',
             connection,
