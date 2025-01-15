@@ -16,9 +16,20 @@ def transform_data(data) -> Tuple[pd.DataFrame]:
     )
     # Create the aggregated data for high value customers
     high_value_customers = get_high_value_customers(merged_data)
+    save_dataframe_to_csv(
+        high_value_customers,
+        './data/processed/',
+        'high_value_customers.csv'
+    )
+
     # Clean high-value customers to remove missing values for age /country
     cleaned_high_value_customers = high_value_customers.dropna(
         subset=['age', 'country']
+    )
+    save_dataframe_to_csv(
+        cleaned_high_value_customers,
+        './data/processed/',
+        'cleaned_high_value_customers.csv'
     )
 
     return (merged_data, high_value_customers, cleaned_high_value_customers)
