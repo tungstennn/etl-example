@@ -34,6 +34,13 @@ logger = setup_logger(__name__, 'database.log', level=logging.DEBUG)
 def get_db_connection(connection_params):
     try:
         # Create SQLAlchemy engine
+        if (
+            not connection_params.get('user') or
+            not connection_params.get('dbname') or
+            not connection_params.get('host') or
+            not connection_params.get('port')
+        ):
+            raise ValueError('User not provided')
         engine = create_engine(
             f"postgresql+psycopg2://{connection_params['user']}"
             f":{connection_params['password']}@{connection_params['host']}"
@@ -42,6 +49,12 @@ def get_db_connection(connection_params):
         logger.setLevel(logging.INFO)
         logger.info("Successfully connected to the database.")
         return engine
+    except ValueError as e:
+        logger.setLevel(logging.ERROR)
+        logger.error(f"Invalid Connection Parameters: {e}")
+        raise DatabaseConnectionError(
+            f"Invalid Connection Parameters: {e}"
+        )
     except SQLAlchemyError as e:
         logger.setLevel(logging.ERROR)
         logger.error(f"Failed to connect to the database: {e}")

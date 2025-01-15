@@ -101,3 +101,38 @@ def test_get_db_connection_timeout_failure(mocker, connection_params):
     mock_logger.error.assert_called_once_with(
         str(excinfo.value)
     )
+
+
+# Define a set of connection parameters that are invalid
+# These should be used as parameterised inputs for the test
+# The function should through a ValueError if connection parameters are invalid
+@pytest.mark.parametrize("invalid_params", [
+    {
+        'dbname': '', 'user': 'test_user', 'password': 'test_password',
+        'host': 'test_host', 'port': '1234'
+    },
+    {
+        'dbname': 'test_db', 'user': '', 'password': 'test_password',
+        'host': 'test_host', 'port': '1234'
+    },
+    {
+        'dbname': 'test_db', 'user': 'test_user', 'password': 'test_password',
+        'host': '', 'port': '1234'
+    },
+    {
+        'dbname': 'test_db', 'user': 'test_user', 'password': 'test_password',
+        'host': 'test_host', 'port': ''
+    },
+    {
+        'dbname': 'test_db', 'user': 'test_user', 'password': 'test_password',
+        'host': 'test_host', 'port': 'NaN'
+    },
+])
+def test_get_db_connection_invalid_params(mocker, invalid_params):
+    mock_logger = mocker.patch('utils.db_utils.logger')
+
+    with pytest.raises(DatabaseConnectionError) as excinfo:
+        get_db_connection(invalid_params)
+
+    assert "Invalid Connection Parameters" in str(excinfo.value)
+    mock_logger.error.assert_called_once_with(str(excinfo.value))

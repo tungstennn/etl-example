@@ -43,26 +43,6 @@ def test_db_connection_unavailable():
         get_db_connection(connection_params)
 
 
-# Move to be unit test
-# def test_db_connection_timeout(mocker):
-#     connection_params = load_db_config()['source_database']
-#     mocker.patch(
-#         'psycopg2.connect',
-#         side_effect=psycopg2.OperationalError("timeout")
-#         # https://www.psycopg.org/docs/errors.html
-#     )
-
-#     with pytest.raises(DatabaseConnectionError):
-#         get_db_connection(connection_params)
-
-
-# def test_db_connection_missing_env_vars(mocker):
-#     mocker.patch.dict('os.environ', {}, clear=True)
-#     # psycopg2 inserts default values for some missing parameters!
-#     with pytest.raises(KeyError):
-#         load_db_config()
-
-
 def test_db_connection_already_closed():
     connection_params = load_db_config()['source_database']
     connection = get_db_connection(connection_params)
