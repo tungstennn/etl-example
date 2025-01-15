@@ -58,7 +58,7 @@ def extract_transactions_execution() -> pd.DataFrame:
     query = import_sql_query(EXTRACT_TRANSACTIONS_QUERY_FILE)
     connection = get_db_connection(connection_details)
     transactions_df = execute_extract_query(query, connection)
-    connection.close()
+    connection.dispose()
     # print(transactions_df)
     # Initially added to debug during dev - remove before production
     return transactions_df
