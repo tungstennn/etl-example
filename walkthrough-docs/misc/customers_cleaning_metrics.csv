@@ -1,0 +1,2 @@
+rows_in_dataset, duplicates, missing_transaction_age, missing_county, missing_is_active, duplicates_with_missing_country_is_active, remaining_rows_after_cleaning
+5200, 149, 323, 191, 282, 12, 4457

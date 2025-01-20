@@ -5,10 +5,10 @@ from config.env_config import setup_env
 
 # Define test directories and corresponding coverage targets
 TEST_CONFIG = {
-    'unit': {'dir': 'tests/unit_tests', 'cov': ['config', 'utils']},
-    'integration': {'dir': 'tests/integration_tests', 'cov': []},
-    'component': {'dir': 'tests/component_tests', 'cov': []},
-    'all': {'dir': 'tests', 'cov': ['config', 'utils']},
+    'unit': {'dir': 'tests/unit_tests', 'cov': ['config', 'utils', 'etl']},
+    'integration': {'dir': 'tests/integration_tests', 'cov': ['etl']},
+    'component': {'dir': 'tests/component_tests', 'cov': ['etl']},
+    'all': {'dir': 'tests', 'cov': ['config', 'etl', 'utils']},
 }
 
 

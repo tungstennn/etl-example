@@ -40,9 +40,9 @@ def test_log_extract_success_transactions(
         "etl.extract.extract_transactions.timeit.default_timer",
         side_effect=[mock_start_time, mock_end_time]
     )
-    
+
     df = extract_transactions()
-    
+
     # Assertions
     mock_log_extract_success.assert_called_once_with(
         mock_logger,

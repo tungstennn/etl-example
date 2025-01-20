@@ -12,15 +12,15 @@ def main():
     print("Environment setup complete.")
 
     print("Extracting data...")
-    data = extract_data()
+    extracted_data = extract_data()
     print("Data extraction complete.")
 
     print("Transforming data...")
-    data = transform_data(data)
+    transformed_data = transform_data(extracted_data)
     print("Data transformation complete.")
 
     print("Loading data...")
-    load_data(data)
+    load_data(transformed_data)
     print("Data loading complete.")
 
     print(

@@ -25,11 +25,11 @@ def load_db_config() -> Dict[str, Dict[str, str]]:
     connection parameters.
     """
 
-    print("Running load_db_config")
+    # print("Running load_db_config")
 
-    for key in list(os.environ):
-        if key.startswith('SOURCE_DB_') or key.startswith('TARGET_DB_'):
-            print(f"Key found in db_config: {key}, value: {os.getenv(key)}")
+    # for key in list(os.environ):
+    #     if key.startswith('SOURCE_DB_') or key.startswith('TARGET_DB_'):
+    #         print(f"Key found in db_config: {key}, value: {os.getenv(key)}")
 
     config = {
         'source_database': {
